@@ -64,27 +64,27 @@ os.execute('lua install.lua')
 end
 local function Files_Info_Get()
 Create_Info(database:get(Server_Done.."Token_Write"),database:get(Server_Done.."UserSudo_Write"),database:get(Server_Done.."User_Write"))  
-local RunBot = io.open("DriVeR", 'w')
+local RunBot = io.open("DRIVER", 'w')
 RunBot:write([[
 #!/usr/bin/env bash
-cd $HOME/DriVeR
+cd $HOME/DRIVER
 token="]]..database:get(Server_Done.."Token_Write")..[["
-rm -fr DriVeR.lua
-wget "https://raw.githubusercontent.com/DriVeRTEAM/DriVeR/main/DriVeR.lua"
+rm -fr DRIVER.lua
+wget "https://raw.githubusercontent.com/DRIVERTEAM/DRIVER/main/DRIVER.lua"
 while(true) do
 rm -fr ../.telegram-cli
-./tg -s ./DriVeR.lua -p PROFILE --bot=$token
+./tg -s ./DRIVER.lua -p PROFILE --bot=$token
 done
 ]])
 RunBot:close()
 local RunTs = io.open("Run", 'w')
 RunTs:write([[
 #!/usr/bin/env bash
-cd $HOME/DriVeR
+cd $HOME/DRIVER
 while(true) do
 rm -fr ../.telegram-cli
-screen -S DriVeR -X kill
-screen -S DriVeR ./DriVeR
+screen -S DRIVER -X kill
+screen -S DRIVER ./DRIVER
 done
 ]])
 RunTs:close()

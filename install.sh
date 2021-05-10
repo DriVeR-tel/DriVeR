@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-cd $HOME/DriVeR
+cd $HOME/DRIVER
 install() {
 rm -rf $HOME/.telegram-cli
 sudo chmod +x tg
-chmod +x DriVeR
+chmod +x DRIVER
 chmod +x Run
 ./Run
 }
