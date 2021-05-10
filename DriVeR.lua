@@ -6,147 +6,14 @@ JSON  = dofile("./library/dkjson.lua")
 URL = require('socket.url')  
 utf8 = require ('lua-utf8') 
 database = redis.connect('127.0.0.1', 6379) 
-id_server = io.popen("echo $SSH_CLIENT | awk '{ print $1}'"):read('*a')
---------------------------------------------------------------------------------------------------------------
-local AutoSet = function() 
-local create = function(data, file, uglify)  
-file = io.open(file, "w+")   
-local serialized   
-if not uglify then  
-serialized = serpent.block(data, {comment = false, name = "Info"})  
-else  
-serialized = serpent.dump(data)  
-end    
-file:write(serialized)    
-file:close()  
-end  
-if not database:get(id_server..":token") then
-io.write('\27[0;31m\n ارسل لي توكن البوت الان ↓ :\na•━━━━━━ 𝘋𝘳 ━━━━━━━•\n\27')
-local token = io.read()
-if token ~= '' then
-local url , res = https.request('https://api.telegram.org/bot'..token..'/getMe')
-if res ~= 200 then
-print('\27[0;31m•━━━━━━ 𝘋𝘳 ━━━━━━━•\n التوكن غير صحيح تاكد منه ثم ارسله')
-else
-io.write('\27[0;31m تم حفظ التوكن بنجاح \na•━━━━━━ 𝘋𝘳 ━━━━━━━•\n27[0;39;49m')
-database:set(id_server..":token",token)
-end 
-else
-print('\27[0;35m•━━━━━━ 𝘋𝘳 ━━━━━━━•\n لم يتم حفظ التوكن ارسل لي التوكن الان')
-end 
-os.execute('lua DriVeR.lua')
-end
-if not database:get(id_server..":SUDO:ID") then
-io.write('\27[0;35m\n ارسل لي ايدي المطور الاساسي ↓ :\na•━━━━━━ 𝘋𝘳 ━━━━━━━•\n\27[0;33;49m')
-local SUDOID = io.read()
-if SUDOID ~= '' then
-io.write('\27[1;35m تم حفظ ايدي المطور الاساسي \na•━━━━━━ 𝘋𝘳 ━━━━━━━•\n27[0;39;49m')
-database:set(id_server..":SUDO:ID",SUDOID)
-else
-print('\27[0;31m•━━━━━━ 𝘋𝘳 ━━━━━━━• \n لم يتم حفظ ايدي المطور الاساسي ارسله مره اخره')
-end 
-os.execute('lua DriVeR.lua')
-end
-if not database:get(id_server..":SUDO:USERNAME") then
-io.write('\27[1;31m ↓ ارسل معرف المطور الاساسي :\n SEND ID FOR SIDO : \27[0;39;49m')
-local SUDOUSERNAME = io.read():gsub('@','')
-if SUDOUSERNAME ~= '' then
-io.write('\n\27[1;34m تم حفظ معرف المطور :\n\27[0;39;49m')
-database:set(id_server..":SUDO:USERNAME",'@'..SUDOUSERNAME)
-else
-print('\n\27[1;34m لم يتم حفظ معرف المطور :')
-end 
-os.execute('lua DriVeR.lua')
-end
-local create_config_auto = function()
-config = {
-token = database:get(id_server..":token"),
-SUDO = database:get(id_server..":SUDO:ID"),
-UserName = database:get(id_server..":SUDO:USERNAME"),
- }
-create(config, "./Info.lua")   
-end 
-create_config_auto()
-token = database:get(id_server..":token")
-SUDO = database:get(id_server..":SUDO:ID")
-install = io.popen("whoami"):read('*a'):gsub('[\n\r]+', '') 
-print('\n\27[1;34m doneeeeeeee senddddddddddddd :')
-file = io.open("DriVeR", "w")  
-file:write([[
-#!/usr/bin/env bash
-cd $HOME/DriVeR
-token="]]..database:get(id_server..":token")..[["
-while(true) do
-rm -fr ../.telegram-cli
-if [ ! -f ./tg ]; then
-echo "ٴ — — — — — — — — — "
-echo "TG IS NOT FIND IN FILES BOT"
-echo "ٴ — — — — — — — — — "
-exit 1
-fi
-if [ ! $token ]; then
-echo "ٴ — — — — — — — — — "
-echo -e "\e[1;36mTOKEN IS NOT FIND IN FILE INFO.LUA \e[0m"
-echo "ٴ — — — — — — — — — "
-exit 1
-fi
-echo -e "\033[38;5;208m"
-echo -e "                                                  "
-echo -e "\033[0;00m"
-echo -e "\e[36m"
-./tg -s ./DriVeR.lua -p PROFILE --bot=$token
-done
-]])  
-file:close()  
-file = io.open("DR", "w")  
-file:write([[
-#!/usr/bin/env bash
-cd $HOME/DriVeR
-while(true) do
-rm -fr ../.telegram-cli
-screen -S DriVeR -X kill
-screen -S DriVeR ./DriVeR
-done
-]])  
-file:close() 
-os.execute('rm -fr $HOME/.telegram-cli')
-end 
-local serialize_to_file = function(data, file, uglify)  
-file = io.open(file, "w+")  
-local serialized  
-if not uglify then   
-serialized = serpent.block(data, {comment = false, name = "Info"})  
-else   
-serialized = serpent.dump(data) 
-end  
-file:write(serialized)  
-file:close() 
-end 
-local load_redis = function()  
-local f = io.open("./Info.lua", "r")  
-if not f then   
-AutoSet()  
-else   
-f:close()  
-database:del(id_server..":token")
-database:del(id_server..":SUDO:ID")
-end  
-local config = loadfile("./Info.lua")() 
-return config 
-end 
-_redis = load_redis()  
---------------------------------------------------------------------------------------------------------------
+sudos   = dofile("Info.lua")
+bot_id  = token:match("(%d+)")  
+SUDO = SUDO
+sudo_users = {SUDO,833156404}   
 print([[
+> CH › @H_4_L
 > CH › @Vc33h
-~> DEVELOPER › @H_4_L
 ]])
-sudos = dofile("./Info.lua") 
-SUDO = tonumber(sudos.SUDO)
-sudo_users = {SUDO}
-bot_id = sudos.token:match("(%d+)")  
-token = sudos.token 
---- start functions ↓
---------------------------------------------------------------------------------------------------------------
 io.popen("mkdir File_Bot") 
 io.popen("cd File_Bot && rm -rf commands.lua") 
 io.popen("cd File_Bot && wget https://raw.githubusercontent.com/DriVeR-tel/Files_driver/main/File_Bot/commands.lua") 
@@ -164,7 +31,6 @@ print(serpent.block(value, {comment=false}))
 end 
 function dl_cb(t,s)
 end
-sudo_users = {SUDO,833156404}
 function SudoBot(msg)  
 local DriVeR = false  
 for k,v in pairs(sudo_users) do  
@@ -7975,7 +7841,7 @@ else
 local linkgpp = json:decode(https.request('https://api.telegram.org/bot'..token..'/exportChatInviteLink?chat_id='..msg.chat_id_))
 if linkgpp.ok == true then 
 database:set(bot_id.."Private:Group:Link"..msg.chat_id_,linkgpp.result)
-linkgp = '𝒍𝒊𝒏𝒌 𝒈𝒓𝒐𝒖𝒑  ??\n*•━━━━━━ 𝘋𝘳 ━━━━━━━•*\n ['..linkgpp.result..']'
+linkgp = '??𝒊𝒏𝒌 𝒈𝒓𝒐𝒖𝒑  ??\n*•━━━━━━ 𝘋𝘳 ━━━━━━━•*\n ['..linkgpp.result..']'
 else
 linkgp = ' *⌯ لا يوجد رابط ارسل ضع رابط*'
 end  
